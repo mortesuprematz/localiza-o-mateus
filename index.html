@@ -1,46 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Localização Mateus</title>
+  <meta charset="UTF-8">
+  <title>Teste de Localização</title>
 </head>
 <body>
-  <h2>Enviando sua localização...</h2>
-  <p id="status">Aguarde...</p>
+  <h2>Teste de Localização</h2>
+  <p id="msg">Aguardando...</p>
 
   <script>
-    function sucesso(pos) {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-
-      document.getElementById('status').innerText = "Localização obtida! Enviando...";
-
-      fetch('https://script.google.com/macros/s/AKfycbziCMS2YHYCOgm_tY9rCfEiatX_dTqi4Pq2L02g0WDvT5zErfNfnbe393w735O2NGNikA/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function(position) {
+          document.getElementById('msg').innerText = 
+            "Latitude: " + position.coords.latitude + 
+            ", Longitude: " + position.coords.longitude;
         },
-        body: JSON.stringify({ latitude: lat, longitude: lon })
-      })
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('status').innerText = "Localização enviada com sucesso!";
-      })
-      .catch(error => {
-        document.getElementById('status').innerText = "Erro ao enviar localização.";
-      });
-    }
-
-    function erro(err) {
-      document.getElementById('status').innerText = "Erro ao obter localização. Permissão negada?";
-    }
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(sucesso, erro);
+        function(error) {
+          document.getElementById('msg').innerText = 
+            "Erro: " + error.message;
+        }
+      );
     } else {
-      document.getElementById('status').innerText = "Geolocalização não suportada neste navegador.";
+      document.getElementById('msg').innerText = 
+        "Geolocalização não suportada.";
     }
   </script>
 </body>
