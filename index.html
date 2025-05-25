@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Localização Mateus</title>
+</head>
+<body>
+  <h2>Enviando sua localização...</h2>
+  <p id="status">Aguarde...</p>
+
+  <script>
+    function sucesso(pos) {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
+
+      document.getElementById('status').innerText = "Localização obtida! Enviando...";
+
+      fetch('https://script.google.com/macros/s/AKfycbziCMS2YHYCOgm_tY9rCfEiatX_dTqi4Pq2L02g0WDvT5zErfNfnbe393w735O2NGNikA/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ latitude: lat, longitude: lon })
+      })
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('status').innerText = "Localização enviada com sucesso!";
+      })
+      .catch(error => {
+        document.getElementById('status').innerText = "Erro ao enviar localização.";
+      });
+    }
+
+    function erro(err) {
+      document.getElementById('status').innerText = "Erro ao obter localização. Permissão negada?";
+    }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(sucesso, erro);
+    } else {
+      document.getElementById('status').innerText = "Geolocalização não suportada neste navegador.";
+    }
+  </script>
+</body>
+</html>
